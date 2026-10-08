@@ -212,3 +212,24 @@ test("from 320 to 760 no visible image box collides with the credit or the email
     expect(collisions, `image collisions at ${width}`).toEqual([]);
   }
 });
+
+/* Journey QA October 8 (STS1): at 768 and 1440 the success message sat over the photo <img> that runs behind the navy panel.
+   The photo is decoration, so no image box may sit under any message once the request is confirmed. */
+test("after a confirmed request no image box sits under the status message on tablet or desktop", async ({ page }) => {
+  for (const width of [768, 1024, 1100, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 960 });
+    await page.goto("/");
+    await page.getByLabel("Email address").fill("sweep@example.com");
+    await page.getByRole("button", { name: "Request Access" }).click();
+    await expect(page.getByRole("status")).toContainText("Nothing was sent.");
+    const under = await page.evaluate(() => {
+      const message = document.querySelector(".request-status")!.getBoundingClientRect();
+      return [...document.querySelectorAll("img")].filter(image => {
+        const box = image.getBoundingClientRect();
+        return image.checkVisibility() && Math.min(box.right, message.right) - Math.max(box.left, message.left) > 4
+          && Math.min(box.bottom, message.bottom) - Math.max(box.top, message.top) > 0;
+      }).map(image => image.getAttribute("src"));
+    });
+    expect(under, `images under the status at ${width}`).toEqual([]);
+  }
+});
