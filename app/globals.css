@@ -56,9 +56,11 @@ h1 span { display: block; }
 .platforms li:nth-child(3) img { width: 4.5625rem; }
 .platforms li:nth-child(4) img { width: 4.75rem; }
 
-.visual { position: absolute; inset: 0; z-index: 0; }
+/* On phones the photo is a CSS backdrop at 10% opacity, so no image box sits on top of the text, the error or the credit. */
+.page::before { content: ""; position: absolute; inset: 0; z-index: 0; background: url("/images/mobile/image-host.jpg") center / cover no-repeat; opacity: .1; pointer-events: none; }
+.visual { display: none; position: absolute; inset: 0; z-index: 0; }
 .visual picture, .host { display: block; width: 100%; height: 100%; }
-.host { object-fit: cover; opacity: .1; }
+.host { object-fit: cover; }
 .dots { display: none; }
 
 .credit { padding: 0 1.5rem .5rem; color: var(--blue-300); font-size: 1rem; line-height: 1.5; text-align: center; }
@@ -86,8 +88,8 @@ h1 span { display: block; }
   .platforms { order: 0; margin-top: -.5rem; }
   .platforms ul { justify-content: flex-start; gap: 2.5rem; }
   .platforms li:nth-child(n) img { width: auto; }
-  .visual { inset: 0 0 auto auto; width: 28.75rem; height: 54.25rem; }
-  .host { opacity: 1; }
+  .page::before { content: none; }
+  .visual { display: block; inset: 0 0 auto auto; width: 28.75rem; height: 54.25rem; }
   .dots { display: block; position: absolute; left: 22.25rem; top: 51rem; width: 14.5rem; height: 6.5rem; }
   .credit { text-align: left; padding-inline: 2.75rem; }
   .credit span { display: inline; }

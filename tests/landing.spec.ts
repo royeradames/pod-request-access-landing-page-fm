@@ -95,7 +95,11 @@ test("follows the Figma mobile frame at 375", async ({ page }) => {
   const logos = await box(page, ".platforms ul");
   expect(logos.y + logos.height).toBeLessThan(input.y);
   await expect(page.getByRole("heading", { level: 1 })).toHaveCSS("text-align", "center");
-  await expect(page.locator(".host")).toHaveCSS("opacity", "0.1");
+  expect(await page.evaluate(() => {
+    const backdrop = getComputedStyle(document.querySelector(".page")!, "::before");
+    return [backdrop.opacity, backdrop.backgroundImage.includes("/images/mobile/image-host.jpg")];
+  })).toEqual(["0.1", true]);
+  await expect(page.locator(".visual")).toBeHidden();
   await expect(page.locator(".dots")).toBeHidden();
 });
 

@@ -16,5 +16,6 @@ Next 16.3.6, React 19.2.8, TypeScript 5.9.3, Tailwind 4.2.1, TanStack Form 1.33.
 - Chivo is served through `next/font` as the variable font, so the Figma Light (300) and Bold (700) weights render from one file.
 - The Figma mobile frame uses 14 px body and form text and a 12 px error. The family text floor is 16 px, so those sizes are raised to 16 px; the desktop and tablet sizes (48 px heading, 18 px body) match the Figma exactly.
 - The visible "Demo only: nothing is sent." note sits inside the gap the Figma leaves above the platform logos on tablet and desktop, so the 654 px desktop row and the photo beside it keep the Figma height.
+- On phones the photo is a CSS backdrop at 10% opacity rather than an `<img>` stretched over the page, so no image box sits on top of the text, the error message or the credit (width sweep, October 8, 2026). Tablet and desktop keep the art-directed `<picture>`.
 - The desktop error ring is drawn as an inset shadow so the 448 × 52 pill does not shift when the error appears.
 - A small footer credits Frontend Mentor and the author; the Figma has no footer.
