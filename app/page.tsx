@@ -40,11 +40,7 @@ export default function Home() {
           </section>
         </main>
         <div className="visual" aria-hidden="true">
-          <picture>
-            <source media="(min-width: 68.75rem)" srcSet="/images/desktop/image-host.jpg" />
-            <source media="(min-width: 48rem)" srcSet="/images/tablet/image-host.jpg" />
-            <img className="host" src="/images/mobile/image-host.jpg" alt="" />
-          </picture>
+          <div className="host" />
           <img className="dots" src="/images/bg-pattern-dots.svg" width="232" height="104" alt="" />
         </div>
       </div>
