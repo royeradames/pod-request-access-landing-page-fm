@@ -187,3 +187,24 @@ test("keyboard order and hover follow the design states", async ({ page }) => {
   await button.hover();
   await expect(button).toHaveCSS("background-color", "rgb(170, 243, 215)");
 });
+
+/* QA sweep October 8 (STS1, LA4): on phones the decorative photo was an in-flow <img> stretched over the whole page,
+   so its box collided with the credit and with the empty-submit error. Visible images must stay clear of both. */
+test("from 320 to 760 no visible image box collides with the credit or the email error", async ({ page }) => {
+  for (const width of [320, 360, 400, 480, 560, 640, 720, 760]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Request Access" }).click();
+    await expect(page.locator(".request-error")).toBeVisible();
+    const collisions = await page.evaluate(() => {
+      const targets = [".credit", ".request-error"].map(selector => document.querySelector(selector)!.getBoundingClientRect());
+      return [...document.querySelectorAll(".shell img")].flatMap(image => {
+        const box = image.getBoundingClientRect();
+        if (box.width === 0 || box.height === 0 || !image.checkVisibility({ visibilityProperty: true })) return [];
+        return targets.filter(target => Math.min(box.right, target.right) - Math.max(box.left, target.left) > 2
+          && Math.min(box.bottom, target.bottom) - Math.max(box.top, target.top) > 2).map(() => image.getAttribute("class") ?? image.getAttribute("src"));
+      });
+    });
+    expect(collisions, `image collisions at ${width}`).toEqual([]);
+  }
+});
