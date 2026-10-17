@@ -2,12 +2,19 @@
 
 import { useForm } from "@tanstack/react-form";
 import { useRef, useState } from "react";
-import { z } from "zod";
+import * as z from "zod/mini";
+import en from "zod/v4/locales/en.js";
+
+// Zod Mini ships no messages; load the English ones classic Zod uses so built-in issues read the same.
+z.config(en());
 
 const emptyEmailMessage = "Oops! Please add your email";
 const invalidEmailMessage = "Oops! Please check your email";
 
-const emailSchema = z.string().trim().min(1, { error: emptyEmailMessage, abort: true }).pipe(z.email({ error: invalidEmailMessage }));
+const emailSchema = z.pipe(
+  z.string().check(z.trim(), z.minLength(1, { error: emptyEmailMessage, abort: true })),
+  z.email({ error: invalidEmailMessage }),
+);
 
 /** The demo pauses briefly so the busy state is visible; nothing leaves the browser. */
 const demoDelayMs = 700;
